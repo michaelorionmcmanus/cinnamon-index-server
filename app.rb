@@ -12,7 +12,7 @@ set :expose_headers, ['Content-Type']
 set :logging, :true
 
 # DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/data.db")
-DataMapper.setup(:default, ENV['DATABASE_URL'] || 'postgres://localhost:5432/cinema')
+DataMapper.setup(:default, ENV['HEROKU_POSTGRESQL_CYAN_URL'] || 'postgres://localhost:5432/cinema')
   class Artist
     include DataMapper::Resource
     property :id, Serial
