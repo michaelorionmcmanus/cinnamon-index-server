@@ -11,7 +11,8 @@ set :max_age, "1728000"
 set :expose_headers, ['Content-Type']
 set :logging, :true
 
-DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/data.db")
+# DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/data.db")
+DataMapper.setup(:default, ENV['DATABASE_URL'] || 'postgres://localhost:5432/cinema')
   class Artist
     include DataMapper::Resource
     property :id, Serial
