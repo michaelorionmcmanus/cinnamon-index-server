@@ -61,13 +61,15 @@ post '/artists' do
 
   if practices
     practices.each do |practice|
-      practiceRecord = Practice.first_or_create(:name => practice["name"])
+      practiceRecord = Practice.get(practice)
       artistRecord.practices << practiceRecord
     end
   end
   artistRecord.save
   status 201
-  {artists: artistRecord}.to_json
+  artistAttrs = artistRecord.attributes
+  artistAttrs[:practices] = artistRecord.practices.all(:fields => [:id]).map(&:id)
+  {artist: artistAttrs}.to_json
 end
 
 post '/practices' do
@@ -76,6 +78,7 @@ post '/practices' do
   @practice = @request_payload["practice"]
   name = @practice["name"]
   practiceRecord = Practice.first_or_create(:name => name)
+  {practice: practiceRecord}.to_json
 end
 
 get '/artists' do 
@@ -84,7 +87,7 @@ get '/artists' do
   artists.each do |artist|
     attrs = artist.attributes
     practiceIds = artist.practices.all(:fields => [:id]).map(&:id)
-    attrs[:practices_ids] = practiceIds
+    attrs[:practices] = practiceIds
     out.push(attrs)
   end
   {artists: out}.to_json
